@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner to Google Sheets</title>
+</head>
+<body>
+    <h2>Scanner to Google Sheets</h2>
+    <label>Jméno uživatele:</label>
+    <input type="text" id="user" placeholder="Zadejte jméno" required>
+    <br>
+    <label>Čárové kódy:</label><br>
+    <input type="text" id="code1" autofocus><br>
+    <input type="text" id="code2"><br>
+    <input type="text" id="code3"><br>
+    <input type="text" id="code4"><br>
+    <input type="text" id="code5"><br>
+    <input type="text" id="code6" onkeydown="checkSubmit(event)"><br>
+    <button onclick="sendData()">Uložit</button>
+
+    <script>
+        function checkSubmit(event) {
+            if (event.key === "Tab" || event.key === "Enter") {
+                event.preventDefault(); // Zabrání přeskočení do dalšího pole
+                sendData();
+            }
+        }
+
+        async function sendData() {
+            const user = document.getElementById('user').value;
+            const codes = [];
+            for (let i = 1; i <= 6; i++) {
+                codes.push(document.getElementById(`code${i}`).value);
+            }
+
+            if (!user || codes.every(code => code === "")) {
+                alert("Vyplňte jméno a alespoň jedno pole čárového kódu.");
+                return;
+            }
+
+            const data = { user, codes };
+
+            try {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbzvtViKEGkR0D7S9ozY_NXu0LqS8qHSw95SbstMwMn7XGrdj8-vYF1140AdQgWi5lYH/exec', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+
+                if (response.ok) {
+                    alert("Úspěšně odesláno!");
+                    for (let i = 1; i <= 6; i++) {
+                        document.getElementById(`code${i}`).value = "";
+                    }
+                    document.getElementById("code1").focus(); // Zaměří první pole pro nový sken
+                } else {
+                    alert("Chyba při odesílání dat.");
+                }
+            } catch (error) {
+                alert("Chyba připojení k serveru.");
+            }
+        }
+    </script>
+</body>
+</html>
