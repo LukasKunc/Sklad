@@ -42,7 +42,7 @@
     const data = { user, codes };
 
     try {
-        const response = await fetch('TVOJE_NOVÁ_APPS_SCRIPT_URL', { // 📌 Použij správnou URL
+        const response = await fetch('https://script.google.com/macros/s/AKfycbztafQYBFcLRef7-T6TqCBVAig3TqB8GeuwEVBTS6eOLkk5iTlwn3x34iLXD3jiBxsB/exec', { // 📌 Použij správnou URL
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
